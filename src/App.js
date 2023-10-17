@@ -27,12 +27,10 @@ function App() {
   }
 
   const displayFaceBox = (box) => {
-    console.log(box)
     setBox(box)
   }
 
   const onInputChange = (event) => {
-    // console.log(event.target.value);
     setInput(event.target.value)
   }
 
