@@ -5,7 +5,7 @@ import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm';
 import Rank from './components/Rank/Rank';
 import ParticlesBg from 'particles-bg';
 import FaceRecognition from './components/FaceRecognition/FaceRecognition';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import SignIn from './components/SignIn/SignIn';
 import Register from './components/Register/Register';
 
@@ -14,7 +14,17 @@ function App() {
   const [imageUrl, setimageUrl] = useState()
   const [box, setBox] = useState({})
   const [route, setRoute] = useState('signin')
-  const [isSignedIn, setIsSignedIn] =  useState(false)
+  const [isSignedIn, setIsSignedIn] = useState(false)
+
+  useEffect(() => {
+    fetch('http://localhost:3001/')
+      .then(response => response.json())
+      // .then(data => console.log(data))
+      .catch(err => {
+        console.log(err);
+      }) 
+  })
+
 
   const calculateFaceLocation = (data) => {
     const clarifaiFace = data.outputs[0].data.regions[0].region_info.bounding_box
