@@ -121,7 +121,7 @@ function App() {
           })
             .then(result => result.json())
             .then(count => {
-              setUser({ ...user, entries: count })
+              setUser(u => ({ ...u, entries: count }))
             })
         }
         displayFaceBox(calculateFaceLocation(result))
