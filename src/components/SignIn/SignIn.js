@@ -1,30 +1,31 @@
 import React, { useState } from 'react';
 
-const SignIn = ({ onRouteChange }) => {
-  const [emailInput, setEmailInput] = useState('')
-  const [passwordInput, setPasswordInput] = useState('')
+const SignIn = ({ onRouteChange, loadUser }) => {
+  const [signInEmail, setSignInEmail] = useState('')
+  const [signInPassword, setSignInPassword] = useState('')
 
   const onEmailChange = (event) => {
-    setEmailInput(event.target.value)
+    setSignInEmail(event.target.value)
   }
 
   const onPasswordChange = (event) => {
-    setPasswordInput(event.target.value)
+    setSignInPassword(event.target.value)
   }
 
   const onSubmitSignIn = () => {
-    // console.log({ emailInput, passwordInput });
+    // console.log({ signInEmail, signInPassword });
     fetch('http://localhost:3001/signin', {
       method: 'post',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        email: emailInput,
-        password: passwordInput
+        email: signInEmail,
+        password: signInPassword
       })
     })
       .then(response => response.json())
-      .then(data => {
-        if (data === 'success') {
+      .then(user => {
+        if (user.id) {
+          loadUser(user)
           onRouteChange('home')
         }
       })

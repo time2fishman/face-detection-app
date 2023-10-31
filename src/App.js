@@ -5,26 +5,33 @@ import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm';
 import Rank from './components/Rank/Rank';
 import ParticlesBg from 'particles-bg';
 import FaceRecognition from './components/FaceRecognition/FaceRecognition';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import SignIn from './components/SignIn/SignIn';
 import Register from './components/Register/Register';
 
 function App() {
   const [input, setInput] = useState('')
-  const [imageUrl, setimageUrl] = useState()
+  const [imageUrl, setImageUrl] = useState()
   const [box, setBox] = useState({})
   const [route, setRoute] = useState('signin')
   const [isSignedIn, setIsSignedIn] = useState(false)
-
-  useEffect(() => {
-    fetch('http://localhost:3001/')
-      .then(response => response.json())
-      // .then(data => console.log(data))
-      .catch(err => {
-        console.log(err);
-      }) 
+  const [user, setUser] = useState({
+    id: '',
+    name: '',
+    email: '',
+    entries: 0,
+    joined: ''
   })
 
+  const loadUser = (data) => {
+    setUser({
+      id: data.id,
+      name: data.name,
+      email: data.email,
+      entries: data.entries,
+      joined: data.joined
+    })
+  }
 
   const calculateFaceLocation = (data) => {
     const clarifaiFace = data.outputs[0].data.regions[0].region_info.bounding_box
@@ -49,8 +56,7 @@ function App() {
   }
 
   const onSubmit = () => {
-
-    setimageUrl(input)
+    setImageUrl(input)
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////
     // In this section, we set the user authentication, user and app ID, model details, and the URL
@@ -89,7 +95,7 @@ function App() {
     });
 
     const requestOptions = {
-      method: 'POST',
+      method: 'post',
       headers: {
         'Accept': 'application/json',
         'Authorization': 'Key ' + PAT
@@ -104,9 +110,23 @@ function App() {
     fetch("https://api.clarifai.com/v2/models/" + MODEL_ID + "/outputs", requestOptions)
       .then(response => response.json())
       // .then(result => console.log(result.outputs[0].data.regions[0].region_info.bounding_box))
-      .then(result => displayFaceBox(calculateFaceLocation(result)))
+      .then(result => {
+        if (result) {
+          fetch('http://localhost:3001/image', {
+            method: 'put',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              id: user.id
+            })
+          })
+            .then(result => result.json())
+            .then(count => {
+              setUser({ ...user, entries: count })
+            })
+        }
+        displayFaceBox(calculateFaceLocation(result))
+      })
       .catch(error => console.log('error', error));
-
   }
 
   const onRouteChange = (route) => {
@@ -126,15 +146,15 @@ function App() {
         ?
         <div>
           <Logo />
-          <Rank />
+          <Rank name={user.name} entries={user.entries} />
           <ImageLinkForm onInputChange={onInputChange} onSubmit={onSubmit} />
           <FaceRecognition box={box} imageUrl={imageUrl} />
         </div>
         : (route === 'signin'
           ?
-          <SignIn onRouteChange={onRouteChange} />
+          <SignIn onRouteChange={onRouteChange} loadUser={loadUser} />
           :
-          <Register onRouteChange={onRouteChange} />
+          <Register onRouteChange={onRouteChange} loadUser={loadUser} />
         )
       }
     </div>
