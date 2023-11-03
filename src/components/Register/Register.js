@@ -5,8 +5,6 @@ const Register = ({ onRouteChange, loadUser }) => {
   const [password, setPassword] = useState('')
   const [name, setName] = useState('')
 
-
-
   const onNameChange = (event) => {
     setName(event.target.value)
   }
@@ -20,7 +18,6 @@ const Register = ({ onRouteChange, loadUser }) => {
   }
 
   const onSubmitSignIn = () => {
-    // console.log({ emailInput, passwordInput });
     fetch('http://localhost:3001/register', {
       method: 'post',
       headers: { 'Content-Type': 'application/json' },
@@ -38,7 +35,6 @@ const Register = ({ onRouteChange, loadUser }) => {
         }
       })
   }
-
 
   return (
     <article className="br3 ba b--black-20 mv4 w-100 w-50-m w-25-l mw6 shadow-5 center">
