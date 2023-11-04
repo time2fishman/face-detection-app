@@ -9,19 +9,26 @@ import { useState } from 'react';
 import SignIn from './components/SignIn/SignIn';
 import Register from './components/Register/Register';
 
+const initialInputState = '';
+const initialImageUrlState = '';
+const initialBoxState = {};
+const initialRouteState = 'signin';
+const initialIsSignedInState = false;
+const initialUserState = {
+  id: '',
+  name: '',
+  email: '',
+  entries: 0,
+  joined: ''
+}
+
 function App() {
-  const [input, setInput] = useState('')
-  const [imageUrl, setImageUrl] = useState()
-  const [box, setBox] = useState({})
-  const [route, setRoute] = useState('signin')
-  const [isSignedIn, setIsSignedIn] = useState(false)
-  const [user, setUser] = useState({
-    id: '',
-    name: '',
-    email: '',
-    entries: 0,
-    joined: ''
-  })
+  const [input, setInput] = useState(initialInputState)
+  const [imageUrl, setImageUrl] = useState(initialImageUrlState)
+  const [box, setBox] = useState(initialBoxState)
+  const [route, setRoute] = useState(initialRouteState)
+  const [isSignedIn, setIsSignedIn] = useState(initialIsSignedInState)
+  const [user, setUser] = useState(initialUserState)
 
   const loadUser = (data) => {
     setUser({
@@ -95,7 +102,6 @@ function App() {
 
     fetch("https://api.clarifai.com/v2/models/" + MODEL_ID + "/outputs", requestOptions)
       .then(response => response.json())
-      // .then(result => console.log(result.outputs[0].data.regions[0].region_info.bounding_box))
       .then(result => {
         if (result) {
           fetch('http://localhost:3001/image', {
@@ -109,15 +115,21 @@ function App() {
             .then(count => {
               setUser(u => ({ ...u, entries: count }))
             })
+            .catch(err => console.log(err));
         }
         displayFaceBox(calculateFaceLocation(result))
       })
-      .catch(error => console.log('error', error));
+      .catch(err => console.log(err));
   }
 
   const onRouteChange = (route) => {
     if (route === 'signout') {
-      setIsSignedIn(false)
+      setIsSignedIn(initialInputState)
+      setInput(initialInputState)
+      setImageUrl(initialImageUrlState)
+      setBox(initialBoxState)
+      setRoute(initialRouteState)
+      setUser(initialUserState)
     } else if (route === 'home') {
       setIsSignedIn(true)
     }
