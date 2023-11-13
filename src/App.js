@@ -64,46 +64,16 @@ function App() {
 
   const onSubmit = () => {
     setImageUrl(input)
-
-    const PAT = '9b547f35793c41d1b3aca60f34821b27';
-    const USER_ID = 'clarifai';
-    const APP_ID = 'main';
-    const MODEL_ID = 'face-detection';
-    const IMAGE_URL = input;
-
-    const raw = JSON.stringify({
-      "user_app_id": {
-        "user_id": USER_ID,
-        "app_id": APP_ID
-      },
-      "inputs": [
-        {
-          "data": {
-            "image": {
-              "url": IMAGE_URL
-            }
-          }
-        }
-      ]
-    });
-
-    const requestOptions = {
+    fetch('http://localhost:3001/imageurl', {
       method: 'post',
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': 'Key ' + PAT
-      },
-      body: raw
-    };
-
-    // NOTE: MODEL_VERSION_ID is optional, you can also call prediction with the MODEL_ID only
-    // https://api.clarifai.com/v2/models/{YOUR_MODEL_ID}/outputs
-    // this will default to the latest version_id
-
-    fetch("https://api.clarifai.com/v2/models/" + MODEL_ID + "/outputs", requestOptions)
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        input: input
+      })
+    })
       .then(response => response.json())
-      .then(result => {
-        if (result) {
+      .then(response => {
+        if (response) {
           fetch('http://localhost:3001/image', {
             method: 'put',
             headers: { 'Content-Type': 'application/json' },
@@ -111,13 +81,13 @@ function App() {
               id: user.id
             })
           })
-            .then(result => result.json())
+            .then(response => response.json())
             .then(count => {
               setUser(u => ({ ...u, entries: count }))
             })
             .catch(err => console.log(err));
         }
-        displayFaceBox(calculateFaceLocation(result))
+        displayFaceBox(calculateFaceLocation(response))
       })
       .catch(err => console.log(err));
   }
