@@ -8,7 +8,6 @@ import FaceRecognition from './components/FaceRecognition/FaceRecognition';
 import { useState } from 'react';
 import SignIn from './components/SignIn/SignIn';
 import Register from './components/Register/Register';
-import fetch from 'node-fetch';
 
 const initialInputState = '';
 const initialImageUrlState = '';
