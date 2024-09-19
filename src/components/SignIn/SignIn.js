@@ -13,7 +13,7 @@ const SignIn = ({ onRouteChange, loadUser }) => {
   }
 
   const onSubmitSignIn = () => {
-    fetch('https://face-detection-backend-80jt.onrender.com/signin', {
+    fetch('https://face-detection-backend-1.onrender.com', {
       method: 'post',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
