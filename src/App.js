@@ -64,6 +64,7 @@ function App() {
 
   const onSubmit = () => {
     setImageUrl(input)
+    // fetch('http://localhost:3001/imageurl', {
     fetch('https://face-detection-backend-1.onrender.com/imageurl', {
       method: 'post',
       headers: { 'Content-Type': 'application/json' },
@@ -74,6 +75,7 @@ function App() {
       .then(response => response.json())
       .then(response => {
         if (response) {
+          // fetch('http://localhost:3001/image', {
           fetch('https://face-detection-backend-1.onrender.com/image', {
             method: 'put',
             headers: { 'Content-Type': 'application/json' },

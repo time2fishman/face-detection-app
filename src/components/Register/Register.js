@@ -18,6 +18,7 @@ const Register = ({ onRouteChange, loadUser }) => {
   }
 
   const onSubmitSignIn = () => {
+    // fetch('http://localhost:3001/register', {
     fetch('https://face-detection-backend-1.onrender.com/register', {
       method: 'post',
       headers: { 'Content-Type': 'application/json' },
